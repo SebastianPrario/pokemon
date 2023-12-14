@@ -1,4 +1,4 @@
-Poquemon
+Pokemon
 Este proyecto fue desarrollado utilizando el framework Ionic y React.
 
 Descripción
