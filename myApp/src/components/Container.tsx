@@ -8,12 +8,9 @@ import {
   IonText,
   IonItem,
   IonLabel,
-  IonAvatar,
-  IonImg,
   IonCard,
   IonCardContent,
   IonCardHeader,
-  IonCardSubtitle,
   IonCardTitle,
   IonContent,
   IonHeader,
@@ -29,30 +26,28 @@ import axios from 'axios';
 
 const Container  =  () =>  {
    
-  const [allPokemon , setAllPokemon ] = useState<number[]>([])
-  const [ items, setItems ] = useState<string[]>([])
+  const [allPokemonId , setAllPokemonId ] = useState<number[]>([])
+  const [ PokeCard, setPokeCard ] = useState<string[]>([])
   
 
-  const generateItems = async (allPokemonsId : number[], deleteItems? : boolean) => {
-    if (deleteItems) setItems([])
+  const generateItems = async (allPokemonsId : number[]) => {
     const newItems = [];
     for (let i = 0; i < 50; i++) {
-      const url = `https://pokeapi.co/api/v2/pokemon/${allPokemonsId[ 1 +items.length + i]}`
+      const url = `https://pokeapi.co/api/v2/pokemon/${allPokemonsId[ 1 +PokeCard.length + i]}`
       const response = !!allPokemonsId && await axios.get(url)
       const data = response.data
       newItems.push(data);
-    setItems([...items, ...newItems]);
+      setPokeCard([...PokeCard, ...newItems]);
     }
   };
 
   const reload = () => {
-    setItems([])
+    setPokeCard([])
     handleSortIds()
   }
 
   const getAllPokemon  = async () => {
     
-    const allPokemon : number [] = []
     const url = `https://pokeapi.co/api/v2/pokemon/?limit=1292`
     const response =  await axios.get(url)
     const data = response.data
@@ -60,15 +55,15 @@ const Container  =  () =>  {
         const id = element.url.split('/').slice(-2, -1)[0]
         return id
     }) 
-    setAllPokemon(idArray.sort( function (a : number, b : number ) {
+    setAllPokemonId(idArray.sort( function (a : number, b : number ) {
              return Math.random() - 0.5;
             } ))
-    !!allPokemon && generateItems(allPokemon);
+    ;
   }
 
   const handleSortIds : any = () => {
-    const allIdArray = allPokemon
-    setAllPokemon(allIdArray.sort( function (a, b) {
+    const allIdArray = allPokemonId
+    setAllPokemonId(allIdArray.sort( function (a, b) {
       return Math.random() - 0.5;
     }))
   }
@@ -78,95 +73,83 @@ const Container  =  () =>  {
   },[]);
 
   useEffect(() => {
-    allPokemon.length>0 && generateItems(allPokemon)
-  },[allPokemon])
+    allPokemonId.length>10 && generateItems(allPokemonId)
+  },[allPokemonId])
   
   useEffect(() => {
-    items.length<1 && generateItems(allPokemon)
-    console.log(items[0])
-  },[items])
+    PokeCard.length<1 && allPokemonId.length>50  && generateItems(allPokemonId)
+  },[PokeCard])
  
  
   function handleRefresh (event: CustomEvent<RefresherEventDetail>) {
     setTimeout(() => {
     reload()
-    console.log(items)
     event.detail.complete();
     }, 2000);
   }
-
-
+ 
   return (
     
-    <IonContent fullscreen={true} className='ion-padding'>
-  
+    <IonContent className='ion-padding'>
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent>
-          <IonHeader translucent={true}>
+         
+        </IonRefresherContent>
+      </IonRefresher>
+       <IonHeader slot="fixed"  >
             <IonToolbar >
               <IonTitle>Pokemon Api</IonTitle>
             </IonToolbar>
           </IonHeader>
-        </IonRefresherContent>
-      </IonRefresher>
       
-      <IonInfiniteScroll
-          onIonInfinite={(ev) => {
-            generateItems(allPokemon);
-            setTimeout(() => ev.target.complete(), 500);
-          }}
-        >
         <IonGrid>
           <IonRow className='ion-justify-content-center'>
-            <IonCol size='6'text-center>
-              <IonInfiniteScrollContent>
+            <IonCol sizeLg='8' size='12'>
               <IonList >
-                {!!items && items.map((item : any , index : number) => (
+                {!!PokeCard && PokeCard.map((item : any , index : number) => (
                   <IonItem key={index}>
                       <IonLabel>
-                      <div className='div'>
-                      <IonRow class="ion-align-items-center">
-                        <IonCol size='5'>
-                          <img src={item.sprites.front_default} alt={item.name}/>
-                        </IonCol>
-                        <IonCol size='5'>
-                        <IonText color="tertiary">
-                          <h1>{item.name}</h1>
-                        </IonText>
-                        </IonCol>
-                        <IonCardTitle>id :{item.id}</IonCardTitle>
-                        </IonRow>
+                      <IonCard  color="warning">
+                        <img src={item.sprites.other.home.front_default} alt={item.name}/>
                         <IonCardHeader>
-                       
+                          <IonCardTitle>
+                            {item.name}
+                          </IonCardTitle>
+                          id :{item.id}
                         </IonCardHeader>
-                    
-                      <IonCardContent color='primary'>   
+                      <IonCardContent >   
                         <IonText color="primary" >
-                          <h1> altura :{item.weight}</h1> 
-                          <h1> peso :{item.height}</h1> 
-                          <h1> experincia: {item.base_experience}</h1> 
+                          <h2> altura : {item.weight}</h2> 
+                          <h2> peso : {item.height}</h2> 
+                          <h2> experincia: {item.base_experience}</h2> 
                         </IonText>
-                      </IonCardContent>
-                      <IonCardContent>peso :{item.height}</IonCardContent>
-                      <IonCardContent>experincia: {item.base_experience}</IonCardContent>
-                      {item.abilities.map ( (ability : any) => 
+                        <IonText color="dark" >
+                          <h2> HABILIDADES </h2> 
+                        </IonText>
+                      {item.abilities.map ( (ability : any, index : number) => 
                         (
-                          <IonText color="primary" >
-                          <h1> {ability.ability.name}</h1> 
+                          <IonText key={index}  color="primary" >
+                           <h2> {index+1} {ability.ability.name}</h2> 
                           </IonText>
                         ))}
-                      </div>
+                        </IonCardContent>
+                      </IonCard>
                       </IonLabel>
                     </IonItem>
                       ))}
             </IonList>
-            </IonInfiniteScrollContent>
-          </IonCol>
+           </IonCol>
         </IonRow>
       </IonGrid>
+      <IonInfiniteScroll
+        onIonInfinite={(ev) => {
+          generateItems(allPokemonId);
+          setTimeout(() => ev.target.complete(), 500);
+        }}
+      >
+      <IonInfiniteScrollContent></IonInfiniteScrollContent>
       </IonInfiniteScroll>
     </IonContent>
   )
 }
-
 export default Container
