@@ -10,14 +10,14 @@ peso
 experiencia 
 y sus habilidades.
 
-para recargar la lista de pokemon , desplizar desde la parte superior.
+para recargar la lista de pokemon , deslizar desde la parte superior.
 
 Instalación
 Para instalar y ejecutar la aplicación, siga los siguientes pasos:
 
-Clonar el repositorio
-Instalar las dependencias: npm install
-Iniciar la aplicación: ionic serveUso
+1 ) Clonar el repositorio
+2 ) Instalar las dependencias: npm install
+3 ) Iniciar la aplicación: ionic serveUso
 
 
 
