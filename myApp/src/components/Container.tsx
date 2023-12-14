@@ -91,17 +91,16 @@ const Container  =  () =>  {
   return (
     
     <IonContent className='ion-padding'>
-      <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-        <IonRefresherContent>
-         
-        </IonRefresherContent>
-      </IonRefresher>
+     
        <IonHeader slot="fixed"  >
             <IonToolbar >
               <IonTitle>Pokemon Api</IonTitle>
             </IonToolbar>
           </IonHeader>
-      
+      <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+        <IonRefresherContent>
+        </IonRefresherContent>
+      </IonRefresher>
         <IonGrid>
           <IonRow className='ion-justify-content-center'>
             <IonCol sizeLg='8' size='12'>
@@ -110,7 +109,10 @@ const Container  =  () =>  {
                   <IonItem key={index}>
                       <IonLabel>
                       <IonCard  color="warning">
-                        <img src={item.sprites.other.home.front_default} alt={item.name}/>
+                        <img src={item.sprites.other.home.front_default?
+                        item.sprites.other.home.front_default :
+                        item.sprites.front_default
+                        }  alt={item.name}/>
                         <IonCardHeader>
                           <IonCardTitle>
                             {item.name}
